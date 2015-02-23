@@ -28,7 +28,7 @@ def run(N):
 
 	for i in range(N):
 		bot = Bot()
-		run_episode(bot,agent, None, draw=False, policy='eps_greedy', episode_len=20)
+		run_episode(bot,agent, None, draw=False, policy='eps_greedy')
 		#if bot.center[1] > 7: print "quadrobot moved on: %i steps" % bot.center[1]
 
 
@@ -44,7 +44,7 @@ def run(N):
 	
 	bot = Bot()
 	bot.info()
-	run_episode(bot,agent, surf, draw = True, policy='greedy', episode_len=50)
+	run_episode(bot,agent, surf, draw = True, policy='greedy', episode_len=60)
 	print "Robot moves:\n", bot.path
 	write_data(agent.Q,"data/q.dat")
 	
@@ -80,10 +80,9 @@ def run_episode(bot, agent, surf, draw=False, policy='random', episode_len=20):
 		if draw: 
 			bot.draw(surf)
 			pg.display.flip()
-			sleep(0.2)
+			sleep(0.1)
 			
 			
-
 
 
 

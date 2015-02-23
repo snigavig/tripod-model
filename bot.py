@@ -54,8 +54,8 @@ class Bot():
 		print "  leg length: (%i + %i)" % (self.L,self.L)
 		print "  feet range: (%i - %i)" % (int(self.d_min),int(self.d_max))
 		print "  initial feet position:"
-		print "  fore left: %i  right: %i" % tuple(self.feet[:2])
-		print "  hind left: %i  right: %i" % tuple(self.feet[2:])
+		#print "  fore left: %i  right: %i" % tuple(self.feet[:2])
+		#print "  hind left: %i  right: %i" % tuple(self.feet[2:])
 		print "-"*25
 
 
@@ -63,10 +63,29 @@ class Bot():
 	def is_legal(self, new_feet):
 		return all([ new_feet[i]<=self.d_max and new_feet[i]>= self.d_min for i in range(4)])
 
+	
+	def get_moveable_legs(self):
+		legs = []
+		if self.feet[0]>self.feet[3]: legs.append(1)
+		elif self.feet[3]>self.feet[0]: legs.append(2)
 
+		if self.feet[1]>self.feet[2]: legs.append(0)
+		elif self.feet[2]>self.feet[1]: legs.append(3)
+
+		return legs
+
+	
 	def take_action(self, action):
 		""" returns True if suceesded. Otherwise returns False
 		"""
+		## check if the leg can move
+		#moveable_legs = range(4)
+		moveable_legs = self.get_moveable_legs()
+		if action != 0:
+			if (action-1) not in moveable_legs:
+				self.path.append(20+action)
+				return False
+
 		new_feet = self.feet + self.moves[action]
 		if self.is_legal(new_feet):
 			self.feet = new_feet
@@ -85,7 +104,7 @@ class Bot():
 
 	def draw(self, surf):
 		white = (250,250,250)
-		dark_grey = (50,50,50)
+		dark_grey = (100,100,100)
 		(x0,y0) = (100,100)
 		scale = 10
 		radius = scale * self.body / 10
