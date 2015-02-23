@@ -6,12 +6,15 @@
 ####################################################### 
 
 import numpy as np
-from math import sqrt, sin, cos
+from math import sqrt, sin, cos, radians
 from tools import get_random_item
 from random import seed
 import pygame as pg
+from time import sleep
 
-
+white = (250,250,250)
+dark_grey = (100,100,100)
+		
 
 class Bot():
 	def __init__(self, body_width=10, leg_len=20, height=2, strand=1):
@@ -19,9 +22,11 @@ class Bot():
 		self.L = leg_len
 		self.H = height
 		self.S = strand
+		self.scale = 10
+
 		self.feet = np.zeros(4,dtype=np.int)
 		self.moves = np.array([
-			[-1,-1,1,1],
+			[-1,-1, 1, 1],
 			[ 4, 0, 0, 0],
 			[ 0, 4, 0, 0],
 			[ 0, 0,-4, 0],
@@ -102,9 +107,7 @@ class Bot():
 		return sum([ self.feet[i]<<3*i for i in range(4)])
 
 
-	def draw(self, surf):
-		white = (250,250,250)
-		dark_grey = (100,100,100)
+	def draw_top_view(self, surf):
 		(x0,y0) = (100,100)
 		scale = 10
 		radius = scale * self.body / 10
@@ -124,6 +127,42 @@ class Bot():
 
 		pos = np.array([self.center[0]-self.body/2, self.center[1]-self.body/2-self.feet[3]])
 		pg.draw.circle(surf, dark_grey, tuple( pos*scale+np.array([x0,y0]) ), radius, 0)
+
+		pg.display.flip()
+		
+
+
+	def draw_move_forward(self, prevCenter, surf, frames=4):
+		for f in range(frames):
+			dc = self.scale * (self.center[1] - prevCenter) * (frames - f) / frames
+			self.draw_bot(self.center[1]*self.scale-dc, self.scale*self.feet, surf) 
+			pg.display.flip()
+			sleep(0.01)
+
+	def draw_one_leg(self, prevFeet, surf, frames=4):
+		for f in range(frames):
+			currFeet = prevFeet + (self.feet - prevFeet) * self.scale * f / frames 
+			self.draw_bot(self.scale * self.center[1], currFeet, surf) 
+			pg.display.flip()
+			sleep(0.01)
+
+	
+	def draw_bot(self, center, feet, surf):
+		"""draws in (y,z) axes 
+		"""
+		N = 10
+		y0,z0 = 100,300
+		surf.fill(white)
+		
+		print "Draw:", center, feet
+
+		body = [ (y0 + center+self.scale*self.body * cos(radians(180*a/N)) / 2, 
+				 z0 - self.scale*self.H - self.body * sin(radians(180*a/N)) * self.scale / 2)
+			for a in range(N+1)]
+
+		pg.draw.polygon(surf, dark_grey, body, 0)
+
+		
 
 
 

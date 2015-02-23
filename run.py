@@ -36,7 +36,7 @@ def run(N):
 	_ = raw_input("Now see the demo. Press button to continue ...")
 	pg.init()
 	pg.display.init()
-	surf = pg.display.set_mode((300,600))
+	surf = pg.display.set_mode((800,600))
 	surf.fill(white)
 	pg.display.flip()
 	print "Surf1:", surf
@@ -67,21 +67,24 @@ def run_episode(bot, agent, surf, draw=False, policy='random', episode_len=20):
 			raise
 
 		prevState = bot.get_state()
+		prevFeet = bot.feet.copy()
+		prevCenter = bot.center[1]
+	
 		if not bot.take_action(action):
 			reward = -5
+
 		elif action == 0: # body move forward
 			reward = 1
 			bot.center += np.array([0,1])
+			if draw: bot.draw_move_forward(prevCenter, surf)
+			
 		else:
 			reward = 0
+			if draw: bot.draw_one_leg(prevFeet, surf)
+			
 
 		agent.learn(prevState, bot.get_state(), action, reward)
-		
-		if draw: 
-			bot.draw(surf)
-			pg.display.flip()
-			sleep(0.1)
-			
+				
 			
 
 
