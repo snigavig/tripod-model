@@ -20,7 +20,7 @@ black = (0,0,0)
 		
 
 class Bot():
-	def __init__(self, body_width=10, leg_len=8, height=2, strand=1):
+	def __init__(self, body_width=10, leg_len=6, height=2, strand=1):
 		self.body = body_width
 		self.L = leg_len
 		self.heap_width = 9
@@ -47,7 +47,7 @@ class Bot():
 
 	def set_random_state(self):
 		seed()
-		Ls = range(1,9)
+		Ls = range(2,8)
 
 		self.feet = np.array([
 			get_random_item(Ls),
@@ -139,23 +139,37 @@ class Bot():
 	def draw_move_forward(self, prevCenter, surf, frames=5):
 		for f in range(frames+1):
 			dc = self.scale * (self.center[1] - prevCenter) * (frames - f) / frames
-			self.draw_bot(self.center[1]*self.scale-dc, self.scale*self.feet-self.scale*self.moves[0]* (frames - f) / frames, surf) 
+			self.draw_bot(self.center[1]*self.scale-dc, 
+						self.scale*self.feet-self.scale*self.moves[0]* (frames - f) / frames, 
+						None,
+						None,
+						surf) 
 			pg.display.flip()
 			#sleep(0.01)
 
-	def draw_one_leg(self, prevFeet, surf, frames=5):
+	def draw_one_leg(self, raised_leg, prevFeet, surf, frames=11):
 		for f in range(frames+1):
-			currFeet = self.scale*prevFeet + (self.feet - prevFeet) * self.scale * f / frames 
-			self.draw_bot(self.scale * self.center[1], currFeet, surf) 
+			currFeet = self.scale*prevFeet + (self.feet - prevFeet) * self.scale * f / frames
+			leg_height = 3*f*(frames-f)*self.scale *self.H / frames**2 
+
+			self.draw_bot(self.scale * self.center[1], 
+						currFeet, 
+						raised_leg, 
+						leg_height, 
+						surf) 
 			pg.display.flip()
 			#sleep(0.01)
 
 	
-	def draw_bot(self, center, feet, surf):
+	def draw_bot(self, center, feet, raised_leg, leg_height, surf):
 		"""draws in (y,z) axes. center and feet are given in pixels
 		"""
 		#print "Draw:", center, feet
 		y0,z0 = 100,300
+		leg_z = np.array([0,0,0,0])
+		if raised_leg != None:
+			leg_z[raised_leg] += leg_height
+
 		surf.fill(black)
 		
 		fore_joint = (y0 + center+self.scale*self.body/2, z0 - self.scale*self.H)
@@ -167,16 +181,16 @@ class Bot():
 		
 		L0 = sqrt(self.scale**2 * self.L**2-self.scale**2 * self.H**2/4-feet[0]**2/4)
 		fore_knee0 = (y0 + center+self.scale*self.body/2+feet[0]/2+L0*cos(theta0),
-					  z0 - self.H/2 - L0*sin(theta0) )		
+					  z0 - leg_z[0] - self.H/2 - L0*sin(theta0) )		
 		L2 = sqrt(self.scale**2 * self.L**2-self.scale**2 * self.H**2/4-feet[2]**2/4)
 		hind_knee2 = (y0 + center-self.scale*self.body/2-feet[2]/2-L2*cos(theta2),
-					  z0 - self.H/2 - L2*sin(theta2) )		
+					  z0 - leg_z[2]- self.H/2 - L2*sin(theta2) )		
 
 		pg.draw.line(surf, dark_grey, fore_joint, fore_knee0, self.heap_width)
-		pg.draw.line(surf, dark_grey, fore_knee0, (y0+center+feet[0]+self.scale*self.body/2,z0), self.ankle_width)
+		pg.draw.line(surf, dark_grey, fore_knee0, (y0+center+feet[0]+self.scale*self.body/2,z0- leg_z[0]), self.ankle_width)
 
 		pg.draw.line(surf, dark_grey, hind_joint, hind_knee2, self.heap_width)
-		pg.draw.line(surf, dark_grey, hind_knee2, (y0+center-feet[2]-self.scale*self.body/2,z0), self.ankle_width)
+		pg.draw.line(surf, dark_grey, hind_knee2, (y0+center-feet[2]-self.scale*self.body/2,z0- leg_z[2]), self.ankle_width)
 
 		## draw body
 		N = 20
@@ -192,16 +206,16 @@ class Bot():
 		
 		L1 = sqrt(self.scale**2 * self.L**2-self.scale**2 * self.H**2/4-feet[1]**2/4)
 		fore_knee1 = (y0 + center+self.scale*self.body/2+feet[1]/2+L1*cos(theta1),
-					  z0 - self.H/2 - L1*sin(theta1) )		
+					  z0 - leg_z[1]- self.H/2 - L1*sin(theta1) )		
 		L3 = sqrt(self.scale**2 * self.L**2-self.scale**2 * self.H**2/4-feet[3]**2/4)
 		hind_knee3 = (y0 + center-self.scale*self.body/2-feet[3]/2-L3*cos(theta3),
-					  z0 - self.H/2 - L3*sin(theta3) )		
+					  z0 - leg_z[3]- self.H/2 - L3*sin(theta3) )		
 
 		pg.draw.line(surf, light_grey, fore_joint, fore_knee1, self.heap_width)
-		pg.draw.line(surf, light_grey, fore_knee1, (y0+center+feet[1]+self.scale*self.body/2,z0), self.ankle_width)
+		pg.draw.line(surf, light_grey, fore_knee1, (y0+center+feet[1]+self.scale*self.body/2,z0- leg_z[1]), self.ankle_width)
 
 		pg.draw.line(surf, light_grey, hind_joint, hind_knee3, self.heap_width)
-		pg.draw.line(surf, light_grey, hind_knee3, (y0+center-feet[3]-self.scale*self.body/2,z0), self.ankle_width)
+		pg.draw.line(surf, light_grey, hind_knee3, (y0+center-feet[3]-self.scale*self.body/2,z0- leg_z[3]), self.ankle_width)
 
 
 

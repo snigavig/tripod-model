@@ -10,7 +10,7 @@ import numpy as np
 
 
 class Agent():
-	def __init__(self, eps=0.1, alpha=0.7, gama=0.9):
+	def __init__(self, eps=0.1, alpha=0.5, gama=0.9):
 		self.eps = eps
 		self.alpha = alpha
 		self.gama = gama

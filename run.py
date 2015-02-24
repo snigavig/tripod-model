@@ -42,7 +42,7 @@ def run(N):
 	
 	bot = Bot()
 	bot.info()
-	run_episode(bot,agent, surf, draw = True, policy='greedy', episode_len=80)
+	run_episode(bot,agent, surf, draw = True, policy='eps_greedy', episode_len=80)
 	print "Robot's last 20 moves:\n", bot.path[-20:]
 	print "Robot walked %i m" % bot.center[1]
 	print "Last state value=%.1f" % agent.get_state_value(bot.get_state()) 
@@ -82,7 +82,8 @@ def run_episode(bot, agent, surf, draw=False, policy='random', episode_len=20):
 			
 		else:
 			reward = 0
-			if draw: bot.draw_one_leg(prevFeet, surf)
+			leg = action - 1
+			if draw: bot.draw_one_leg(leg, prevFeet, surf)
 			
 
 		agent.learn(prevState, bot.get_state(), action, reward)
