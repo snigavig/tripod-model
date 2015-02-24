@@ -14,7 +14,6 @@ import numpy as np
 from time import sleep
 
 
-white = (250,250,250)
 
 
 def run(N):
@@ -33,26 +32,29 @@ def run(N):
 
 
 
-	_ = raw_input("Now see the demo. Press button to continue ...")
 	pg.init()
 	pg.display.init()
 	surf = pg.display.set_mode((800,600))
-	surf.fill(white)
+	surf.fill((0,0,0))
 	pg.display.flip()
 	print "Surf1:", surf
 
 	
 	bot = Bot()
 	bot.info()
-	run_episode(bot,agent, surf, draw = True, policy='greedy', episode_len=60)
-	print "Robot moves:\n", bot.path
+	run_episode(bot,agent, surf, draw = True, policy='greedy', episode_len=80)
+	print "Robot's last 20 moves:\n", bot.path[-20:]
+	print "Robot walked %i m" % bot.center[1]
+	print "Last state value=%.1f" % agent.get_state_value(bot.get_state()) 
 	write_data(agent.Q,"data/q.dat")
+	#_ = raw_input("Press ENTER to quit ...")
+	
 	
 
 def run_episode(bot, agent, surf, draw=False, policy='random', episode_len=20):
 	bot.set_random_state()
 	if draw: 
-		print "Bot feet:",bot.feet
+		print "Robot's starting state:",bot.feet
 		
 	for _ in range(episode_len):
 
