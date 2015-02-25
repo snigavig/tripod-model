@@ -10,12 +10,13 @@ import numpy as np
 
 
 class Agent():
-	def __init__(self, eps=0.1, alpha=0.5, gama=0.9):
+	def __init__(self, eps=0.1, alpha=0.3, gama=0.9):
 		self.eps = eps
 		self.alpha = alpha
 		self.gama = gama
 
 		self.Q = np.zeros((4096,5))
+		self.Q_values = []
 
 
 	def get_policy(self, state):
@@ -24,10 +25,21 @@ class Agent():
 	def get_random_policy(self):
 		return get_random_item(range(5))
 
+	
+	def explore_alternative_actions(self, state):
+		Qa_values = self.Q[state]
+		Vmax = Qa_values.max()
+		alternative_actions = [ i for i in range(5) if Qa_values[i] >= Vmax / 2 ]
+		if len(alternative_actions) != 0:
+			return get_random_item(alternative_actions)
+		else:
+			return Qa_values.argmax()
+
+
 
 	def get_eps_policy(self, state):
 		if coin(self.eps):
-			return self.get_random_policy()
+			return self.explore_alternative_actions(state)
 		else:
 			return self.get_greedy_policy(state)
 
@@ -50,6 +62,7 @@ class Agent():
 		V1 = self.get_state_value(nextState)
 		V = self.Q[(state,action)]
 		
-		self.Q[ ( state,action) ] = V + self.alpha * (reward + self.gama * V1 - V)
-	
+		V_new = V + self.alpha * (reward + self.gama * V1 - V)
+		self.Q[ ( state,action) ] = V_new
+		
 		

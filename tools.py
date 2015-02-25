@@ -32,3 +32,17 @@ def write_data(data, my_file):
 	with open(my_file, 'wb') as handle:
 		pickle.dump(data, handle)
 	handle.close()
+
+def write_path(Q_values, my_file):
+	with open(my_file, 'w') as handle:
+		for val in Q_values:
+			line = str(val[0])+', '+ \
+					str(val[1])+', '+ \
+					str(val[2])+', '+ \
+					str(val[3])+', '+ \
+					str(val[4])+'\n'
+			handle.write(line)
+
+	handle.close()
+
+	

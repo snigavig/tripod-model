@@ -8,7 +8,7 @@
 import sys
 from bot import Bot
 from agent import Agent
-from tools import read_data, write_data
+from tools import read_data, write_data, write_path
 import pygame as pg
 import numpy as np
 from time import sleep
@@ -42,11 +42,12 @@ def run(N):
 	
 	bot = Bot()
 	bot.info()
-	run_episode(bot,agent, surf, draw = True, policy='eps_greedy', episode_len=80)
-	print "Robot's last 20 moves:\n", bot.path[-20:]
+	run_episode(bot,agent, surf, draw = True, policy='eps_greedy', episode_len=60)
+	print "Robot's moves:\n", bot.path
 	print "Robot walked %i m" % bot.center[1]
 	print "Last state value=%.1f" % agent.get_state_value(bot.get_state()) 
 	write_data(agent.Q,"data/q.dat")
+	write_path(agent.Q_values,"data/path.csv")
 	#_ = raw_input("Press ENTER to quit ...")
 	
 	
@@ -87,6 +88,7 @@ def run_episode(bot, agent, surf, draw=False, policy='random', episode_len=20):
 			
 
 		agent.learn(prevState, bot.get_state(), action, reward)
+		if draw: agent.Q_values.append(agent.Q[prevState])
 				
 			
 

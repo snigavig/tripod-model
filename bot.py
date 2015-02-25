@@ -39,7 +39,7 @@ class Bot():
 			])
 		self.center = np.array([0,0])
 		self.path = []
-
+		
 		self.d_min = 1
 		#self.d_max = sqrt(2*self.L**2 - self.H**2)
 		self.d_max = self.d_min + 7
@@ -166,7 +166,7 @@ class Bot():
 		"""
 		#print "Draw:", center, feet
 		y0,z0 = 100,300
-		leg_z = np.array([0,0,0,0])
+		leg_z = np.array([3,0,3,0])
 		if raised_leg != None:
 			leg_z[raised_leg] += leg_height
 
