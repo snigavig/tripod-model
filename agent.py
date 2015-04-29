@@ -1,9 +1,9 @@
 #!/usr/bin/python
 #
-# quadrobot
-# 8 DOF robot 
+# triptripod
+# 9 DOF robot
 #
-####################################################### 
+# ######################################################
 
 from tools import coin, get_random_item
 import numpy as np
@@ -22,7 +22,9 @@ class Agent():
     def get_policy(self, state):
         return self.get_eps_policy(state)
 
-    def get_random_policy(self):
+
+    @staticmethod
+    def get_random_policy():
         return get_random_item(range(5))
 
 

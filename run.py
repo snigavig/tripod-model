@@ -1,7 +1,7 @@
 #!/usr/bin/python
 #
-# quadrobot
-# 8 DOF robot 
+# triptripod
+# 9 DOF robot
 #
 ####################################################### 
 
@@ -26,7 +26,7 @@ def run(N):
     for i in range(N):
         bot = Bot()
         run_episode(bot, agent, None, draw=False, policy='eps_greedy')
-    # if bot.center[1] > 7: print "quadrobot moved on: %i steps" % bot.center[1]
+    # if bot.center[1] > 7: print "robot moved on: %i steps" % bot.center[1]
 
     pg.init()
     pg.display.init()

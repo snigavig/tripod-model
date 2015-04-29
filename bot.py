@@ -1,7 +1,7 @@
 #!/usr/bin/python
 #
-# quadrobot
-# 8 DOF robot 
+# triptripod
+# 9 DOF robot
 #
 ####################################################### 
 
@@ -58,13 +58,13 @@ class Bot():
 
 
     def info(self):
-        print "\nquadrobot info:\n" + "-" * 25
+        print "\nrobot info:\n" + "-" * 25
         print "  body size: (%i x %i)" % (self.body, self.body)
         print "  leg length: (%i + %i)" % (self.L, self.L)
         print "  feet range: (%i - %i)" % (int(self.d_min), int(self.d_max))
         print "  initial feet position:"
         # print "  fore left: %i  right: %i" % tuple(self.feet[:2])
-        #print "  hind left: %i  right: %i" % tuple(self.feet[2:])
+        # print "  hind left: %i  right: %i" % tuple(self.feet[2:])
         print "-" * 25
 
 
@@ -146,7 +146,7 @@ class Bot():
                           None,
                           surf)
             pg.display.flip()
-        # sleep(0.01)
+            # sleep(0.01)
 
     def draw_one_leg(self, raised_leg, prevFeet, surf, frames=11):
         for f in range(frames + 1):
@@ -159,7 +159,7 @@ class Bot():
                           leg_height,
                           surf)
             pg.display.flip()
-        # sleep(0.01)
+            # sleep(0.01)
 
 
     def draw_bot(self, center, feet, raised_leg, leg_height, surf):

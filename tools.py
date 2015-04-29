@@ -1,7 +1,7 @@
 #!/usr/bin/python
 #
-# quadrobot
-# 8 DOF robot 
+# triptripod
+# 9 DOF robot
 #
 ####################################################### 
 
